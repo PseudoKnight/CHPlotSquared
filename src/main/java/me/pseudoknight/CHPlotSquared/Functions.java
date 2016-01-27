@@ -18,11 +18,14 @@ import com.laytonsmith.core.constructs.Construct;
 import com.laytonsmith.core.constructs.CString;
 import com.laytonsmith.core.constructs.Target;
 import com.laytonsmith.core.environments.Environment;
+import com.laytonsmith.core.exceptions.CRE.CREFormatException;
+import com.laytonsmith.core.exceptions.CRE.CREIllegalArgumentException;
+import com.laytonsmith.core.exceptions.CRE.CREInvalidWorldException;
+import com.laytonsmith.core.exceptions.CRE.CRELengthException;
+import com.laytonsmith.core.exceptions.CRE.CREThrowable;
 import com.laytonsmith.core.exceptions.ConfigRuntimeException;
 import com.laytonsmith.core.functions.AbstractFunction;
-import com.laytonsmith.core.functions.Exceptions.ExceptionType;
 import com.intellectualcrafters.plot.PS;
-import com.plotsquared.bukkit.util.BukkitUtil;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -72,7 +75,7 @@ public class Functions {
 			Collection<Plot> plots;
 			String world = args[0].val();
 			if(!PS.get().isPlotWorld(world)) {
-				throw new ConfigRuntimeException(C.NOT_VALID_PLOT_WORLD.s(), ExceptionType.InvalidWorldException, t);
+				throw new CREInvalidWorldException(C.NOT_VALID_PLOT_WORLD.s(), t);
 			}
 			if(args.length == 2){
 				UUID uuid = Static.GetUUID(args[1], t);
@@ -88,9 +91,9 @@ public class Functions {
 		}
 
 		@Override
-		public ExceptionType[] thrown() {
-			return new ExceptionType[]{ExceptionType.InvalidWorldException,
-					ExceptionType.LengthException,ExceptionType.IllegalArgumentException};
+		public Class<? extends CREThrowable>[] thrown() {
+			return new Class[]{CREInvalidWorldException.class,
+					CRELengthException.class,CREIllegalArgumentException.class};
 		}
 	}
 
@@ -108,8 +111,9 @@ public class Functions {
 
 		@Override
 		public Construct exec(Target t, Environment environment, Construct... args) throws ConfigRuntimeException {
-			MCLocation location = ObjectGenerator.GetGenerator().location(args[0], null, t);
-			PlotId plotid = MainUtil.getPlotId(BukkitUtil.getLocation((org.bukkit.Location) location.getHandle()));
+			MCLocation l = ObjectGenerator.GetGenerator().location(args[0], null, t);
+			PlotId plotid = MainUtil.getPlotId(new Location(
+					l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getYaw(), l.getPitch()));
 			if(plotid == null){
 				return CNull.NULL;
 			}
@@ -117,8 +121,8 @@ public class Functions {
 		}
 
 		@Override
-		public ExceptionType[] thrown() {
-			return new ExceptionType[]{ExceptionType.FormatException};
+		public Class<? extends CREThrowable>[] thrown() {
+			return new Class[]{CREFormatException.class};
 		}
 	}
 
@@ -146,9 +150,9 @@ public class Functions {
 		}
 
 		@Override
-		public ExceptionType[] thrown() {
-			return new ExceptionType[]{ExceptionType.InvalidWorldException,ExceptionType.FormatException,
-					ExceptionType.LengthException,ExceptionType.IllegalArgumentException};
+		public Class<? extends CREThrowable>[] thrown() {
+			return new Class[]{CREInvalidWorldException.class,CREFormatException.class,
+					CRELengthException.class,CREIllegalArgumentException.class};
 		}
 	}
 
@@ -177,25 +181,25 @@ public class Functions {
 
 			CArray owners = new CArray(t);
 			for(UUID uuid : plot.getOwners()){
-				owners.push(new CString(uuid.toString(), t));
+				owners.push(new CString(uuid.toString(), t), t);
 			}
 			info.set("owners", owners, t);
 
 			CArray members = new CArray(t);
 			for(UUID uuid : plot.getMembers()){
-				members.push(new CString(uuid.toString(), t));
+				members.push(new CString(uuid.toString(), t), t);
 			}
 			info.set("members", members, t);
 
 			CArray trusted = new CArray(t);
 			for(UUID uuid : plot.getTrusted()){
-				trusted.push(new CString(uuid.toString(), t));
+				trusted.push(new CString(uuid.toString(), t), t);
 			}
 			info.set("trusted", trusted, t);
 
 			CArray denied = new CArray(t);
 			for(UUID uuid : plot.getDenied()){
-				denied.push(new CString(uuid.toString(), t));
+				denied.push(new CString(uuid.toString(), t), t);
 			}
 			info.set("denied", denied, t);
 
@@ -203,21 +207,22 @@ public class Functions {
 		}
 
 		@Override
-		public ExceptionType[] thrown() {
-			return new ExceptionType[]{ExceptionType.InvalidWorldException,ExceptionType.FormatException};
+		public Class<? extends CREThrowable>[] thrown() {
+			return new Class[]{CREInvalidWorldException.class,CREFormatException.class};
 		}
 	}
 
 	private static Plot GetPlot(Target t, Construct... args){
 		if(args[0] instanceof CArray){
-			MCLocation location = ObjectGenerator.GetGenerator().location(args[0], null, t);
-			Location plotLoc = BukkitUtil.getLocation((org.bukkit.Location) location.getHandle());
+			MCLocation l = ObjectGenerator.GetGenerator().location(args[0], null, t);
+			Location plotLoc = new Location(
+					l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getYaw(), l.getPitch());
 			return(MainUtil.getPlot(plotLoc));
 		} else {
 			String worldName = args[0].val();
 			PlotId plotId = PlotId.fromString(args[1].val());
 			if(plotId == null){
-				throw new ConfigRuntimeException("Invalid plot id format.", ExceptionType.FormatException, t);
+				throw new CREFormatException("Invalid plot id format.", t);
 			}
 			return(MainUtil.getPlot(worldName, plotId));
 		}
