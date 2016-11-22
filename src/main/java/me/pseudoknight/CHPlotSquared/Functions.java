@@ -138,7 +138,7 @@ public class Functions {
 
 		@Override
 		public Integer[] numArgs() {
-			return new Integer[]{2,3};
+			return new Integer[]{2,4};
 		}
 
 		@Override
@@ -169,7 +169,7 @@ public class Functions {
 
 		@Override
 		public Integer[] numArgs() {
-			return new Integer[]{1,2};
+			return new Integer[]{1,3};
 		}
 
 		@Override
