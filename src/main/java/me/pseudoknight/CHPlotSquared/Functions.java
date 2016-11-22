@@ -1,8 +1,11 @@
 package me.pseudoknight.CHPlotSquared;
 
+import com.intellectualcrafters.plot.PS;
+import com.intellectualcrafters.plot.api.PlotAPI;
 import com.intellectualcrafters.plot.config.C;
 import com.intellectualcrafters.plot.object.Location;
 import com.intellectualcrafters.plot.object.Plot;
+import com.intellectualcrafters.plot.object.PlotArea;
 import com.intellectualcrafters.plot.object.PlotId;
 import com.intellectualcrafters.plot.util.MainUtil;
 import com.laytonsmith.PureUtilities.Version;
@@ -14,8 +17,8 @@ import com.laytonsmith.core.Static;
 import com.laytonsmith.core.constructs.CArray;
 import com.laytonsmith.core.constructs.CBoolean;
 import com.laytonsmith.core.constructs.CNull;
-import com.laytonsmith.core.constructs.Construct;
 import com.laytonsmith.core.constructs.CString;
+import com.laytonsmith.core.constructs.Construct;
 import com.laytonsmith.core.constructs.Target;
 import com.laytonsmith.core.environments.Environment;
 import com.laytonsmith.core.exceptions.CRE.CREFormatException;
@@ -25,7 +28,6 @@ import com.laytonsmith.core.exceptions.CRE.CRELengthException;
 import com.laytonsmith.core.exceptions.CRE.CREThrowable;
 import com.laytonsmith.core.exceptions.ConfigRuntimeException;
 import com.laytonsmith.core.functions.AbstractFunction;
-import com.intellectualcrafters.plot.PS;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -81,7 +83,7 @@ public class Functions {
 				UUID uuid = Static.GetUUID(args[1], t);
 				plots = PS.get().getPlots(world, uuid);
 			} else {
-				plots = PS.get().getPlotsInWorld(world);
+				plots = PS.get().getPlots(world);
 			}
 			CArray cplots = new CArray(t);
 			for(Plot plot : plots) {
@@ -130,7 +132,7 @@ public class Functions {
 	public static class plot_has_player extends PlotSquaredFunction {
 		@Override
 		public String docs() {
-			return "mixed {location, uuid | world, plotid, uuid} Returns whether the player is added to a plot."
+			return "mixed {location, uuid | world, plotarea, plotid, uuid} Returns whether the player is added to a plot."
 					+ " Returns null if no plot exists at that location or by that plot id.";
 		}
 
@@ -160,7 +162,7 @@ public class Functions {
 	public static class plot_info extends PlotSquaredFunction {
 		@Override
 		public String docs() {
-			return "mixed {location | world, plotid} Returns an associative array of plot info, or null if not a plot."
+			return "mixed {location | world, plotarea, plotid} Returns an associative array of plot info, or null if not a plot."
 					+ " The array will contain the indexes \"owners\", \"members\", \"trusted\", and \"denied\", each"
 					+ " with an array of UUIDs.";
 		}
@@ -174,7 +176,7 @@ public class Functions {
 		public Construct exec(Target t, Environment environment, Construct... args) throws ConfigRuntimeException {
 			Plot plot = GetPlot(t, args);
 			if(plot == null){
-				return null;
+				return CNull.NULL;
 			}
 
 			CArray info = CArray.GetAssociativeArray(t);
@@ -215,16 +217,18 @@ public class Functions {
 	private static Plot GetPlot(Target t, Construct... args){
 		if(args[0] instanceof CArray){
 			MCLocation l = ObjectGenerator.GetGenerator().location(args[0], null, t);
-			Location plotLoc = new Location(
-					l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getYaw(), l.getPitch());
-			return(MainUtil.getPlot(plotLoc));
+			Location plotLoc = new Location(l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ());
+			PlotArea area = plotLoc.getPlotArea();
+			return area == null ? null : area.getPlot(plotLoc);
 		} else {
 			String worldName = args[0].val();
+			String areaName = args[1].val();
+			PlotArea area = PS.get().getPlotArea(worldName, areaName);
 			PlotId plotId = PlotId.fromString(args[1].val());
 			if(plotId == null){
 				throw new CREFormatException("Invalid plot id format.", t);
 			}
-			return(MainUtil.getPlot(worldName, plotId));
+			return area.getPlot(plotId);
 		}
 	}
 }
