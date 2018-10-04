@@ -7,6 +7,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <repositories>
+        <repository>
+            <id>plotsquared-repo</id>
+            <url>http://ci.athion.net/job/PlotSquared/ws/mvn/</url>
+        </repository>
+    </repositories>
     <build>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
         <plugins>
@@ -83,9 +89,9 @@
             <version>3.3.2-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.intellectualcrafters</groupId>
-            <artifactId>plotsquared</artifactId>
-            <version>3.5.1-SNAPSHOT</version>
+            <groupId>com.plotsquared</groupId>
+            <artifactId>plotsquared-api</artifactId>
+            <version>latest</version>
         </dependency>
     </dependencies>
 </project>

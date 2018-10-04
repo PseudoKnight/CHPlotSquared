@@ -1,13 +1,11 @@
 package me.pseudoknight.CHPlotSquared;
 
 import com.intellectualcrafters.plot.PS;
-import com.intellectualcrafters.plot.api.PlotAPI;
 import com.intellectualcrafters.plot.config.C;
 import com.intellectualcrafters.plot.object.Location;
 import com.intellectualcrafters.plot.object.Plot;
 import com.intellectualcrafters.plot.object.PlotArea;
 import com.intellectualcrafters.plot.object.PlotId;
-import com.intellectualcrafters.plot.util.MainUtil;
 import com.laytonsmith.PureUtilities.Version;
 import com.laytonsmith.abstraction.MCLocation;
 import com.laytonsmith.annotations.api;
@@ -76,7 +74,7 @@ public class Functions {
 		public Construct exec(Target t, Environment environment, Construct... args) throws ConfigRuntimeException {
 			Collection<Plot> plots;
 			String world = args[0].val();
-			if(!PS.get().isPlotWorld(world)) {
+			if(!PS.get().hasPlotArea(world)) {
 				throw new CREInvalidWorldException(C.NOT_VALID_PLOT_WORLD.s(), t);
 			}
 			if(args.length == 2){
@@ -114,8 +112,12 @@ public class Functions {
 		@Override
 		public Construct exec(Target t, Environment environment, Construct... args) throws ConfigRuntimeException {
 			MCLocation l = ObjectGenerator.GetGenerator().location(args[0], null, t);
-			PlotId plotid = MainUtil.getPlotId(new Location(
-					l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getYaw(), l.getPitch()));
+			Location loc = new Location(l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ());
+			PlotArea area = loc.getPlotArea();
+			if(area == null){
+				return CNull.NULL;
+			}
+			PlotId plotid = area.getPlotManager().getPlotId(area, loc.getX(), loc.getY(), loc.getZ());
 			if(plotid == null){
 				return CNull.NULL;
 			}
@@ -224,7 +226,7 @@ public class Functions {
 			String worldName = args[0].val();
 			String areaName = args[1].val();
 			PlotArea area = PS.get().getPlotArea(worldName, areaName);
-			PlotId plotId = PlotId.fromString(args[1].val());
+			PlotId plotId = PlotId.fromString(args[2].val());
 			if(plotId == null){
 				throw new CREFormatException("Invalid plot id format.", t);
 			}
