@@ -9,6 +9,10 @@
     </properties>
     <repositories>
         <repository>
+            <id>sk89q-maven</id>
+            <url>http://maven.sk89q.com/repo</url>
+        </repository>
+        <repository>
             <id>plotsquared-repo</id>
             <url>http://ci.athion.net/job/PlotSquared/ws/mvn/</url>
         </repository>
