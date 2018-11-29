@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.pseudoknight</groupId>
     <artifactId>CHPlotSquared</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>commandhelper</artifactId>
-            <version>3.3.2-SNAPSHOT</version>
+            <version>3.3.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.plotsquared</groupId>

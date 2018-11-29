@@ -9,14 +9,13 @@ import com.intellectualcrafters.plot.object.PlotId;
 import com.laytonsmith.PureUtilities.Version;
 import com.laytonsmith.abstraction.MCLocation;
 import com.laytonsmith.annotations.api;
-import com.laytonsmith.core.CHVersion;
+import com.laytonsmith.core.MSVersion;
 import com.laytonsmith.core.ObjectGenerator;
 import com.laytonsmith.core.Static;
 import com.laytonsmith.core.constructs.CArray;
 import com.laytonsmith.core.constructs.CBoolean;
 import com.laytonsmith.core.constructs.CNull;
 import com.laytonsmith.core.constructs.CString;
-import com.laytonsmith.core.constructs.Construct;
 import com.laytonsmith.core.constructs.Target;
 import com.laytonsmith.core.environments.Environment;
 import com.laytonsmith.core.exceptions.CRE.CREFormatException;
@@ -26,6 +25,7 @@ import com.laytonsmith.core.exceptions.CRE.CRELengthException;
 import com.laytonsmith.core.exceptions.CRE.CREThrowable;
 import com.laytonsmith.core.exceptions.ConfigRuntimeException;
 import com.laytonsmith.core.functions.AbstractFunction;
+import com.laytonsmith.core.natives.interfaces.Mixed;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -53,7 +53,7 @@ public class Functions {
 
 		@Override
 		public Version since() {
-			return CHVersion.V3_3_1;
+			return MSVersion.V3_3_1;
 		}
 	}
 
@@ -71,7 +71,7 @@ public class Functions {
 		}
 
 		@Override
-		public Construct exec(Target t, Environment environment, Construct... args) throws ConfigRuntimeException {
+		public Mixed exec(Target t, Environment environment, Mixed... args) throws ConfigRuntimeException {
 			Collection<Plot> plots;
 			String world = args[0].val();
 			if(!PS.get().hasPlotArea(world)) {
@@ -110,7 +110,7 @@ public class Functions {
 		}
 
 		@Override
-		public Construct exec(Target t, Environment environment, Construct... args) throws ConfigRuntimeException {
+		public Mixed exec(Target t, Environment environment, Mixed... args) throws ConfigRuntimeException {
 			MCLocation l = ObjectGenerator.GetGenerator().location(args[0], null, t);
 			Location loc = new Location(l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ());
 			PlotArea area = loc.getPlotArea();
@@ -144,7 +144,7 @@ public class Functions {
 		}
 
 		@Override
-		public Construct exec(Target t, Environment environment, Construct... args) throws ConfigRuntimeException {
+		public Mixed exec(Target t, Environment environment, Mixed... args) throws ConfigRuntimeException {
 			Plot plot = GetPlot(t, args);
 			if(plot == null){
 				return CNull.NULL;
@@ -175,7 +175,7 @@ public class Functions {
 		}
 
 		@Override
-		public Construct exec(Target t, Environment environment, Construct... args) throws ConfigRuntimeException {
+		public Mixed exec(Target t, Environment environment, Mixed... args) throws ConfigRuntimeException {
 			Plot plot = GetPlot(t, args);
 			if(plot == null){
 				return CNull.NULL;
@@ -216,7 +216,7 @@ public class Functions {
 		}
 	}
 
-	private static Plot GetPlot(Target t, Construct... args){
+	private static Plot GetPlot(Target t, Mixed... args){
 		if(args[0] instanceof CArray){
 			MCLocation l = ObjectGenerator.GetGenerator().location(args[0], null, t);
 			Location plotLoc = new Location(l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ());
