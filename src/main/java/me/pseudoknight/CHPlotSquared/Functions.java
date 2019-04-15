@@ -1,11 +1,11 @@
 package me.pseudoknight.CHPlotSquared;
 
-import com.intellectualcrafters.plot.PS;
-import com.intellectualcrafters.plot.config.C;
-import com.intellectualcrafters.plot.object.Location;
-import com.intellectualcrafters.plot.object.Plot;
-import com.intellectualcrafters.plot.object.PlotArea;
-import com.intellectualcrafters.plot.object.PlotId;
+import com.github.intellectualsites.plotsquared.plot.PlotSquared;
+import com.github.intellectualsites.plotsquared.plot.config.Captions;
+import com.github.intellectualsites.plotsquared.plot.object.Location;
+import com.github.intellectualsites.plotsquared.plot.object.Plot;
+import com.github.intellectualsites.plotsquared.plot.object.PlotArea;
+import com.github.intellectualsites.plotsquared.plot.object.PlotId;
 import com.laytonsmith.PureUtilities.Version;
 import com.laytonsmith.abstraction.MCLocation;
 import com.laytonsmith.annotations.api;
@@ -74,14 +74,14 @@ public class Functions {
 		public Mixed exec(Target t, Environment environment, Mixed... args) throws ConfigRuntimeException {
 			Collection<Plot> plots;
 			String world = args[0].val();
-			if(!PS.get().hasPlotArea(world)) {
-				throw new CREInvalidWorldException(C.NOT_VALID_PLOT_WORLD.s(), t);
+			if(!PlotSquared.get().hasPlotArea(world)) {
+				throw new CREInvalidWorldException(Captions.NOT_VALID_PLOT_WORLD.s(), t);
 			}
 			if(args.length == 2){
 				UUID uuid = Static.GetUUID(args[1], t);
-				plots = PS.get().getPlots(world, uuid);
+				plots = PlotSquared.get().getPlots(world, uuid);
 			} else {
-				plots = PS.get().getPlots(world);
+				plots = PlotSquared.get().getPlots(world);
 			}
 			CArray cplots = new CArray(t);
 			for(Plot plot : plots) {
@@ -92,8 +92,8 @@ public class Functions {
 
 		@Override
 		public Class<? extends CREThrowable>[] thrown() {
-			return new Class[]{CREInvalidWorldException.class,
-					CRELengthException.class,CREIllegalArgumentException.class};
+			return new Class[]{CREInvalidWorldException.class, CRELengthException.class, 
+					CREIllegalArgumentException.class};
 		}
 	}
 
@@ -135,7 +135,8 @@ public class Functions {
 		@Override
 		public String docs() {
 			return "mixed {location, uuid | world, plotarea, plotid, uuid} Returns whether the player is added to a plot."
-					+ " Returns null if no plot exists at that location or by that plot id.";
+					+ " Returns null if no plot exists at that location or by that plot id."
+					+ " Throws a FormatException if plotid is not two numbers separated by a comma or semi-colon.";
 		}
 
 		@Override
@@ -155,8 +156,8 @@ public class Functions {
 
 		@Override
 		public Class<? extends CREThrowable>[] thrown() {
-			return new Class[]{CREInvalidWorldException.class,CREFormatException.class,
-					CRELengthException.class,CREIllegalArgumentException.class};
+			return new Class[]{CREInvalidWorldException.class, CREFormatException.class,
+					CRELengthException.class, CREIllegalArgumentException.class};
 		}
 	}
 
@@ -166,7 +167,8 @@ public class Functions {
 		public String docs() {
 			return "mixed {location | world, plotarea, plotid} Returns an associative array of plot info, or null if not a plot."
 					+ " The array will contain the indexes \"owners\", \"members\", \"trusted\", and \"denied\", each"
-					+ " with an array of UUIDs.";
+					+ " with an array of UUIDs."
+					+ " Throws a FormatException if plotid is not two numbers separated by a comma or semi-colon.";
 		}
 
 		@Override
@@ -212,7 +214,7 @@ public class Functions {
 
 		@Override
 		public Class<? extends CREThrowable>[] thrown() {
-			return new Class[]{CREInvalidWorldException.class,CREFormatException.class};
+			return new Class[]{CREInvalidWorldException.class, CREFormatException.class};
 		}
 	}
 
@@ -225,9 +227,11 @@ public class Functions {
 		} else {
 			String worldName = args[0].val();
 			String areaName = args[1].val();
-			PlotArea area = PS.get().getPlotArea(worldName, areaName);
-			PlotId plotId = PlotId.fromString(args[2].val());
-			if(plotId == null){
+			PlotArea area = PlotSquared.get().getPlotArea(worldName, areaName);
+			PlotId plotId;
+			try {
+				plotId = PlotId.fromString(args[2].val());
+			} catch(IllegalArgumentException ex) {
 				throw new CREFormatException("Invalid plot id format.", t);
 			}
 			return area.getPlot(plotId);
