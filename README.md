@@ -1,6 +1,6 @@
 # CHPlotSquared
 
-Version 2.x is compatible with MethodScript 3.3.4 and PlotSquared 4
+Version 2.x is compatible with MethodScript 3.3.4 and PlotSquared 4.297+
 
 Version 1.0.2 is compatible with MethodScript 3.3.4 and PlotSquared 3.5.x
 
