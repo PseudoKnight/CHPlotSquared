@@ -16,6 +16,10 @@
             <id>plotsquared-repo</id>
             <url>http://ci.athion.net/job/PlotSquared-Releases/ws/mvn/</url>
         </repository>
+        <repository>
+            <id>Jenkins4J-repo</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
     <build>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
