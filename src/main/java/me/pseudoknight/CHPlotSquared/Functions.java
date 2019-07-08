@@ -117,7 +117,7 @@ public class Functions {
 			if(area == null){
 				return CNull.NULL;
 			}
-			PlotId plotid = area.getPlotManager().getPlotId(area, loc.getX(), loc.getY(), loc.getZ());
+			PlotId plotid = area.getPlotManager().getPlotId(loc.getX(), loc.getY(), loc.getZ());
 			if(plotid == null){
 				return CNull.NULL;
 			}

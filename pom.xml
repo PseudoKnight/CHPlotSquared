@@ -99,7 +99,7 @@
         <dependency>
             <groupId>com.github.intellectualsites.plotsquared</groupId>
             <artifactId>PlotSquared-API</artifactId>
-            <version>latest</version>
+            <version>4.298</version>
         </dependency>
     </dependencies>
 </project>
