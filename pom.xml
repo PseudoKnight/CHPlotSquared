@@ -14,7 +14,7 @@
         </repository>
         <repository>
             <id>plotsquared-repo</id>
-            <url>https://incendo.org/mvn/</url>
+            <url>http://ci.athion.net/job/PlotSquared-Releases/ws/mvn/</url>
         </repository>
     </repositories>
     <build>
@@ -94,9 +94,8 @@
         </dependency>
         <dependency>
             <groupId>com.github.intellectualsites.plotsquared</groupId>
-            <artifactId>PlotSquared</artifactId>
-            <classifier>Bukkit</classifier>
-            <version>4</version>
+            <artifactId>PlotSquared-API</artifactId>
+            <version>latest</version>
         </dependency>
     </dependencies>
 </project>
