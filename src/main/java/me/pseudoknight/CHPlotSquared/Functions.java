@@ -1,11 +1,5 @@
 package me.pseudoknight.CHPlotSquared;
 
-import com.github.intellectualsites.plotsquared.plot.PlotSquared;
-import com.github.intellectualsites.plotsquared.plot.config.Captions;
-import com.github.intellectualsites.plotsquared.plot.object.Location;
-import com.github.intellectualsites.plotsquared.plot.object.Plot;
-import com.github.intellectualsites.plotsquared.plot.object.PlotArea;
-import com.github.intellectualsites.plotsquared.plot.object.PlotId;
 import com.laytonsmith.PureUtilities.Version;
 import com.laytonsmith.abstraction.MCLocation;
 import com.laytonsmith.annotations.api;
@@ -26,6 +20,12 @@ import com.laytonsmith.core.exceptions.CRE.CREThrowable;
 import com.laytonsmith.core.exceptions.ConfigRuntimeException;
 import com.laytonsmith.core.functions.AbstractFunction;
 import com.laytonsmith.core.natives.interfaces.Mixed;
+import com.plotsquared.core.PlotSquared;
+import com.plotsquared.core.configuration.Captions;
+import com.plotsquared.core.location.Location;
+import com.plotsquared.core.plot.Plot;
+import com.plotsquared.core.plot.PlotArea;
+import com.plotsquared.core.plot.PlotId;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -75,7 +75,7 @@ public class Functions {
 			Collection<Plot> plots;
 			String world = args[0].val();
 			if(!PlotSquared.get().hasPlotArea(world)) {
-				throw new CREInvalidWorldException(Captions.NOT_VALID_PLOT_WORLD.s(), t);
+				throw new CREInvalidWorldException(Captions.NOT_VALID_PLOT_WORLD.toString(), t);
 			}
 			if(args.length == 2){
 				UUID uuid = Static.GetUUID(args[1], t);
