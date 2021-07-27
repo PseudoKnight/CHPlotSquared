@@ -8,7 +8,7 @@ import com.laytonsmith.core.extensions.MSExtension;
 @MSExtension("CHPlotSquared")
 public class Extension extends AbstractExtension {
 
-	private static final Version VERSION = new SimpleVersion(3,0,0,"SNAPSHOT");
+	private static final Version VERSION = new SimpleVersion(3,0,0);
 
 	public Version getVersion() {
 		return VERSION;
