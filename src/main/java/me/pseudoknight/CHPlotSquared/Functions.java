@@ -59,8 +59,8 @@ public class Functions {
 	public static class plot_list extends PlotSquaredFunction {
 		@Override
 		public String docs() {
-			return "array {world, [uuid]} Returns an array of plot ids. Throws InvalidWorldException"
-					+ " if world is not a plot world.";
+			return "array {world, [uuid]} Returns an array of plot ids for a world. Optionally filtered by owner UUID."
+					+ " Throws InvalidWorldException if world is not a plot world.";
 		}
 
 		@Override
@@ -138,8 +138,9 @@ public class Functions {
 		@Override
 		public String docs() {
 			return "mixed {location, uuid | world, plotarea, plotid, uuid} Returns whether the player is added to a plot."
-					+ " Returns null if no plot exists at that location or by that plot id."
-					+ " Throws a FormatException if plotid is not two numbers separated by a comma or semi-colon.";
+					+ " Returns null if no plot exists at that location, or by that plotarea or plot id."
+					+ " Throws a FormatException if plotid is not two numbers separated by a comma or semi-colon."
+					+ " Throws InvalidWorldException if world is not a plot world.";
 		}
 
 		@Override
@@ -168,10 +169,12 @@ public class Functions {
 	public static class plot_info extends PlotSquaredFunction {
 		@Override
 		public String docs() {
-			return "mixed {location | world, plotarea, plotid} Returns an associative array of plot info, or null if not a plot."
+			return "mixed {location | world, plotarea, plotid} Returns an associative array of plot info."
+					+ " Returns null if no plot exists at that location, or by that plotarea or plot id."
 					+ " The array will contain the indexes \"owners\", \"members\", \"trusted\", and \"denied\", each"
 					+ " with an array of UUIDs."
-					+ " Throws a FormatException if plotid is not two numbers separated by a comma or semi-colon.";
+					+ " Throws a FormatException if plotid is not two numbers separated by a comma or semi-colon."
+					+ " Throws InvalidWorldException if world is not a plot world.";
 		}
 
 		@Override
@@ -230,6 +233,9 @@ public class Functions {
 		} else {
 			String worldName = args[0].val();
 			String areaName = args[1].val();
+			if(!PlotSquared.get().getPlotAreaManager().hasPlotArea(worldName)) {
+				throw new CREInvalidWorldException("Invalid plot world", t);
+			}
 			PlotArea area = PlotSquared.get().getPlotAreaManager().getPlotArea(worldName, areaName);
 			if(area == null) {
 				return null;
