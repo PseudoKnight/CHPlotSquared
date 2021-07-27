@@ -12,22 +12,20 @@ import com.laytonsmith.core.constructs.CNull;
 import com.laytonsmith.core.constructs.CString;
 import com.laytonsmith.core.constructs.Target;
 import com.laytonsmith.core.environments.Environment;
-import com.laytonsmith.core.exceptions.CRE.CREFormatException;
-import com.laytonsmith.core.exceptions.CRE.CREIllegalArgumentException;
-import com.laytonsmith.core.exceptions.CRE.CREInvalidWorldException;
-import com.laytonsmith.core.exceptions.CRE.CRELengthException;
-import com.laytonsmith.core.exceptions.CRE.CREThrowable;
+import com.laytonsmith.core.exceptions.CRE.*;
 import com.laytonsmith.core.exceptions.ConfigRuntimeException;
 import com.laytonsmith.core.functions.AbstractFunction;
 import com.laytonsmith.core.natives.interfaces.Mixed;
 import com.plotsquared.core.PlotSquared;
-import com.plotsquared.core.configuration.Captions;
 import com.plotsquared.core.location.Location;
 import com.plotsquared.core.plot.Plot;
 import com.plotsquared.core.plot.PlotArea;
 import com.plotsquared.core.plot.PlotId;
+import com.sk89q.worldedit.math.BlockVector3;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 public class Functions {
@@ -72,16 +70,21 @@ public class Functions {
 
 		@Override
 		public Mixed exec(Target t, Environment environment, Mixed... args) throws ConfigRuntimeException {
-			Collection<Plot> plots;
 			String world = args[0].val();
-			if(!PlotSquared.get().hasPlotArea(world)) {
-				throw new CREInvalidWorldException(Captions.NOT_VALID_PLOT_WORLD.toString(), t);
+			if(!PlotSquared.get().getPlotAreaManager().hasPlotArea(world)) {
+				throw new CREInvalidWorldException("Invalid plot world", t);
 			}
+			Set<PlotArea> areas = PlotSquared.get().getPlotAreaManager().getPlotAreasSet(world);
+			Collection<Plot> plots = new ArrayList<>();
 			if(args.length == 2){
 				UUID uuid = Static.GetUUID(args[1], t);
-				plots = PlotSquared.get().getPlots(world, uuid);
+				for(PlotArea area : areas) {
+					plots.addAll(area.getPlots(uuid));
+				}
 			} else {
-				plots = PlotSquared.get().getPlots(world);
+				for(PlotArea area : areas) {
+					plots.addAll(area.getPlots());
+				}
 			}
 			CArray cplots = new CArray(t);
 			for(Plot plot : plots) {
@@ -112,7 +115,7 @@ public class Functions {
 		@Override
 		public Mixed exec(Target t, Environment environment, Mixed... args) throws ConfigRuntimeException {
 			MCLocation l = ObjectGenerator.GetGenerator().location(args[0], null, t);
-			Location loc = new Location(l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ());
+			Location loc = Location.at(l.getWorld().getName(), BlockVector3.at(l.getBlockX(), l.getBlockY(), l.getBlockZ()));
 			PlotArea area = loc.getPlotArea();
 			if(area == null){
 				return CNull.NULL;
@@ -221,13 +224,16 @@ public class Functions {
 	private static Plot GetPlot(Target t, Mixed... args){
 		if(args[0] instanceof CArray){
 			MCLocation l = ObjectGenerator.GetGenerator().location(args[0], null, t);
-			Location plotLoc = new Location(l.getWorld().getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ());
+			Location plotLoc = Location.at(l.getWorld().getName(), BlockVector3.at(l.getBlockX(), l.getBlockY(), l.getBlockZ()));
 			PlotArea area = plotLoc.getPlotArea();
 			return area == null ? null : area.getPlot(plotLoc);
 		} else {
 			String worldName = args[0].val();
 			String areaName = args[1].val();
-			PlotArea area = PlotSquared.get().getPlotArea(worldName, areaName);
+			PlotArea area = PlotSquared.get().getPlotAreaManager().getPlotArea(worldName, areaName);
+			if(area == null) {
+				return null;
+			}
 			PlotId plotId;
 			try {
 				plotId = PlotId.fromString(args[2].val());

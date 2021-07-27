@@ -1,6 +1,8 @@
 # CHPlotSquared
 
-Version 3.x is compatible with MethodScript 3.3.4 and PlotSquared 5.x
+Version 4.x is compatible with MethodScript 3.3.5 and PlotSquared 6.x
+
+Version 3.0.0 is compatible with MethodScript 3.3.4 and PlotSquared 5.x
 
 Version 2.0.0 is compatible with MethodScript 3.3.4 and PlotSquared 4.x
 
@@ -13,7 +15,7 @@ Version 1.0.0 is compatible with MethodScript 3.3.2 and PlotSquared 3.4.x
 ## Functions
 
 #### array plot_list(world, [uuid])
-Returns an array of plot ids. Throws InvalidWorldException if world is not a plot world.
+Returns an array of plot ids. Optionally filtered by owner UUID. Throws InvalidWorldException if world is not a plot world.
 
 #### string plot_at_loc(location)
 Returns the plot id at the specified location, null if no plot exists there.
