@@ -11,7 +11,7 @@ import java.util.logging.Level;
 @MSExtension("CHPlotSquared")
 public class Extension extends AbstractExtension {
 
-	private static final Version VERSION = new SimpleVersion(4,0,0, "SNAPSHOT");
+	private static final Version VERSION = new SimpleVersion(4,0,0);
 
 	public Version getVersion() {
 		return VERSION;
